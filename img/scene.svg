@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" fill="none">
+  <rect width="880" height="420" rx="28" fill="#f4f7ff"/>
+  <circle cx="140" cy="90" r="86" fill="#e4ebff"/>
+  <circle cx="720" cy="300" r="120" fill="#e7edff"/>
+  <circle cx="760" cy="70" r="36" fill="#fff4e8"/>
+  <circle cx="210" cy="118" r="28" fill="#f8931a"/>
+  <path fill="#fff" d="M206 104h3v3h3c4 0 7 2 7 5s-2 4-4 5c3 1 5 3 5 6 0 4-3 6-8 6h-3v4h-3v-4h-3v-3h3v-6h-3v-3h3v-7h-3v-3h3zm3 6v6h3c2 0 4-1 4-3s-2-3-4-3h-3zm0 9v6h4c2 0 4-1 4-3s-2-3-4-3h-4z"/>
+  <rect x="300" y="92" width="72" height="48" rx="14" fill="#7f9bff"/>
+  <text x="336" y="122" text-anchor="middle" fill="#fff" font-family="system-ui,sans-serif" font-size="18" font-weight="700">CV</text>
+  <rect x="168" y="168" width="150" height="44" rx="22" fill="#fff"/>
+  <circle cx="192" cy="190" r="10" fill="#7f9bff"/>
+  <text x="210" y="196" fill="#1c2434" font-family="system-ui,sans-serif" font-size="16" font-weight="600">Reputation</text>
+  <rect x="560" y="150" width="160" height="44" rx="22" fill="#fff"/>
+  <circle cx="586" cy="172" r="10" fill="#f8931a"/>
+  <text x="604" y="178" fill="#1c2434" font-family="system-ui,sans-serif" font-size="16" font-weight="600">Findability</text>
+  <circle cx="640" cy="96" r="28" fill="#f8931a"/>
+  <path fill="#fff" d="M636 82h3v3h3c4 0 7 2 7 5s-2 4-4 5c3 1 5 3 5 6 0 4-3 6-8 6h-3v4h-3v-4h-3v-3h3v-6h-3v-3h3v-7h-3v-3h3zm3 6v6h3c2 0 4-1 4-3s-2-3-4-3h-3zm0 9v6h4c2 0 4-1 4-3s-2-3-4-3h-4z"/>
+  <rect x="250" y="230" width="420" height="16" rx="8" fill="#d5def8"/>
+  <rect x="286" y="214" width="150" height="96" rx="12" fill="#fff" stroke="#d5def8"/>
+  <rect x="304" y="232" width="70" height="8" rx="4" fill="#7f9bff"/>
+  <rect x="304" y="248" width="110" height="8" rx="4" fill="#f8931a"/>
+  <rect x="304" y="264" width="90" height="8" rx="4" fill="#c5d0f5"/>
+  <rect x="470" y="200" width="170" height="110" rx="12" fill="#fff" stroke="#d5def8"/>
+  <text x="555" y="246" text-anchor="middle" fill="#1c2434" font-family="system-ui,sans-serif" font-size="16" font-weight="700">Proof of Work</text>
+  <rect x="496" y="262" width="18" height="28" rx="3" fill="#7f9bff"/>
+  <rect x="522" y="248" width="18" height="42" rx="3" fill="#f8931a"/>
+  <rect x="548" y="256" width="18" height="34" rx="3" fill="#9eb4ff"/>
+  <rect x="574" y="240" width="18" height="50" rx="3" fill="#f4b15a"/>
+  <circle cx="120" cy="310" r="6" fill="#f8931a"/>
+  <circle cx="800" cy="180" r="5" fill="#7f9bff"/>
+  <circle cx="90" cy="200" r="4" fill="#f4b15a"/>
+</svg>
