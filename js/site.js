@@ -1,4 +1,4 @@
-import { hexToNpub, shortenNpub } from "./nip19.js?v=3";
+import { shortenNpub } from "./nip19.js?v=7";
 
 const JOBS = [
   {
@@ -60,44 +60,36 @@ const profileNote = document.querySelector("#profile-note");
 const tierEl = document.querySelector("#tier");
 const reserveName = document.querySelector("#reserve-name");
 const initials = document.querySelector("#initials");
-const nostrErrorEl = document.querySelector("#nostr-error");
 const memberNpubEl = document.querySelector("#member-npub");
-const nostrSignInBtn = document.querySelector("#nostr-signin");
+const memberHandleEl = document.querySelector("#member-handle");
 
 let member = null;
 let filter = "all";
-
-function hasNip07() {
-  return typeof window.nostr?.getPublicKey === "function";
-}
-
-function readSession() {
-  try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if (!raw) return null;
-    const { pubkey } = JSON.parse(raw);
-    const npub = hexToNpub(pubkey);
-    if (!npub) return null;
-    return { pubkey, npub };
-  } catch {
-    return null;
-  }
-}
+let uiBound = false;
 
 function updateIdentityUi() {
   if (!member) return;
   const short = shortenNpub(member.npub);
   who.textContent = short;
-  tierEl.textContent = "NIP-07";
+  tierEl.textContent = member.handle ? member.handle : "NIP-07";
   memberNpubEl.textContent = member.npub;
+  if (memberHandleEl) {
+    memberHandleEl.textContent = member.handle || "—";
+  }
   reserveName.textContent = short;
   initials.textContent = member.npub.replace(/^npub1/, "").slice(0, 2).toUpperCase();
   document.querySelector("#reserve-tier").textContent =
-    "Signed in with your Nostr public key.";
+    member.handle
+      ? `Verified Spaces handle · ${member.handle}`
+      : "Signed in with your Nostr public key.";
 }
 
 function showApp(next) {
   member = next;
+  sessionStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify({ pubkey: member.pubkey, npub: member.npub, handle: member.handle }),
+  );
   gate.classList.add("hidden");
   app.classList.remove("hidden");
   updateIdentityUi();
@@ -111,7 +103,6 @@ function showGate() {
   app.classList.add("hidden");
   gate.classList.remove("hidden");
   nav?.classList.remove("open");
-  if (nostrErrorEl) nostrErrorEl.textContent = "";
 }
 
 function showView(name) {
@@ -155,7 +146,7 @@ function renderJobs() {
 }
 
 function loadProfile() {
-  if (!profileForm || !profileNote) return;
+  if (!profileForm || !profileNote || !member) return;
   const saved = sessionStorage.getItem(PROFILE_KEY + member.pubkey);
   const data = saved
     ? JSON.parse(saved)
@@ -166,63 +157,24 @@ function loadProfile() {
   profileNote.textContent = saved ? "Saved on this device for this session." : "";
 }
 
-async function signInWithNostr() {
-  if (nostrErrorEl) nostrErrorEl.textContent = "";
-  if (!hasNip07()) {
-    if (nostrErrorEl) {
-      nostrErrorEl.textContent =
-        "Nostr bridge failed to load. Reload the page and try again.";
-    }
-    return;
-  }
-  const defaultLabel =
-    nostrSignInBtn?.dataset.label || "Continue with Nostr";
-  if (nostrSignInBtn) {
-    nostrSignInBtn.disabled = true;
-    nostrSignInBtn.textContent = "Waiting for keys.band…";
-  }
-  if (nostrErrorEl) {
-    nostrErrorEl.textContent =
-      "Check for a keys.band approval popup if nothing happens.";
-  }
-  try {
-    const pubkey = (await window.nostr.getPublicKey()).trim();
-    const npub = hexToNpub(pubkey);
-    if (!npub) {
-      if (nostrErrorEl) {
-        nostrErrorEl.textContent = "The extension returned an invalid public key.";
-      }
-      return;
-    }
-    if (nostrErrorEl) nostrErrorEl.textContent = "";
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ pubkey }));
-    showApp({ pubkey, npub });
-  } catch (err) {
-    if (nostrErrorEl) {
-      nostrErrorEl.textContent =
-        err?.message || "Could not read your public key from the extension.";
-    }
-  } finally {
-    if (nostrSignInBtn) {
-      nostrSignInBtn.disabled = false;
-      nostrSignInBtn.textContent = defaultLabel;
-    }
-  }
-}
-
 function bindUi() {
+  if (uiBound) return;
+  uiBound = true;
+
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
 
-    if (target.closest("#nostr-signin")) {
-      void signInWithNostr();
-      return;
-    }
-
     if (target.closest("#signout")) {
-      sessionStorage.removeItem(SESSION_KEY);
-      showGate();
+      void (async () => {
+        try {
+          await fetch("/auth/logout", { method: "POST", credentials: "include" });
+        } catch {
+          /* still clear local state */
+        }
+        sessionStorage.removeItem(SESSION_KEY);
+        location.href = "/";
+      })();
       return;
     }
 
@@ -267,12 +219,22 @@ function bindUi() {
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", bindUi);
-} else {
+export function startApp(session) {
   bindUi();
+  const pubkey =
+    session.pubkey ||
+    (() => {
+      try {
+        return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}").pubkey;
+      } catch {
+        return null;
+      }
+    })();
+  if (!session.npub || !pubkey) return;
+  showApp({
+    pubkey,
+    npub: session.npub,
+    handle: session.handle,
+    handles: session.handles,
+  });
 }
-
-const existing = readSession();
-if (existing) showApp(existing);
-else showGate();
