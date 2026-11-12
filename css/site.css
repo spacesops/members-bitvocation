@@ -209,6 +209,11 @@ h1 {
 
 .section { padding: 18px 0 64px; }
 
+.section.wrap > .kicker {
+  display: block;
+  text-align: center;
+}
+
 .section h2 {
   margin: 0 0 10px;
   font-size: clamp(1.8rem, 3vw, 2.5rem);
@@ -387,6 +392,19 @@ h1 {
   margin: 8px 0 0;
   color: #b42318;
   font-weight: 600;
+  line-height: 1.45;
+}
+
+.error:not(:empty) {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+}
+
+.btn:disabled {
+  opacity: 0.72;
+  cursor: wait;
 }
 
 .gate {
@@ -419,6 +437,45 @@ h1 {
   color: var(--soft);
   font-size: 0.88rem;
   line-height: 1.45;
+}
+
+.hint code {
+  font-size: 0.85em;
+  color: var(--heading);
+}
+
+.nostr-title {
+  margin: 22px 0 8px;
+  font-size: 1.05rem;
+  text-align: center;
+  color: var(--heading);
+}
+
+.nostr-copy {
+  margin: 0 0 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.identity-card {
+  margin: 26px auto 0;
+  max-width: 720px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  text-align: center;
+}
+
+.npub {
+  margin: 8px 0 0;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+  line-height: 1.5;
+  color: var(--heading);
+  word-break: break-all;
 }
 
 .footer {

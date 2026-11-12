@@ -1,15 +1,4 @@
-const MEMBERS = {
-  "member@bitvocation.local": {
-    name: "Alex Rivera",
-    tier: "POW Lab",
-    passcode: "reserve",
-  },
-  "jordan@bitvocation.local": {
-    name: "Jordan Lee",
-    tier: "POW Lab Lite",
-    passcode: "reserve",
-  },
-};
+import { hexToNpub, shortenNpub } from "./nip19.js?v=3";
 
 const JOBS = [
   {
@@ -71,35 +60,47 @@ const profileNote = document.querySelector("#profile-note");
 const tierEl = document.querySelector("#tier");
 const reserveName = document.querySelector("#reserve-name");
 const initials = document.querySelector("#initials");
-const errorEl = document.querySelector("#error");
+const nostrErrorEl = document.querySelector("#nostr-error");
+const memberNpubEl = document.querySelector("#member-npub");
+const nostrSignInBtn = document.querySelector("#nostr-signin");
 
 let member = null;
 let filter = "all";
+
+function hasNip07() {
+  return typeof window.nostr?.getPublicKey === "function";
+}
 
 function readSession() {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY);
     if (!raw) return null;
-    const email = JSON.parse(raw).email;
-    return MEMBERS[email] ? { email, ...MEMBERS[email] } : null;
+    const { pubkey } = JSON.parse(raw);
+    const npub = hexToNpub(pubkey);
+    if (!npub) return null;
+    return { pubkey, npub };
   } catch {
     return null;
   }
+}
+
+function updateIdentityUi() {
+  if (!member) return;
+  const short = shortenNpub(member.npub);
+  who.textContent = short;
+  tierEl.textContent = "NIP-07";
+  memberNpubEl.textContent = member.npub;
+  reserveName.textContent = short;
+  initials.textContent = member.npub.replace(/^npub1/, "").slice(0, 2).toUpperCase();
+  document.querySelector("#reserve-tier").textContent =
+    "Signed in with your Nostr public key.";
 }
 
 function showApp(next) {
   member = next;
   gate.classList.add("hidden");
   app.classList.remove("hidden");
-  who.textContent = member.name;
-  tierEl.textContent = member.tier;
-  reserveName.textContent = member.name;
-  initials.textContent = member.name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2);
-  document.querySelector("#reserve-tier").textContent = member.tier;
+  updateIdentityUi();
   loadProfile();
   renderJobs();
   showView("home");
@@ -109,7 +110,8 @@ function showGate() {
   member = null;
   app.classList.add("hidden");
   gate.classList.remove("hidden");
-  nav.classList.remove("open");
+  nav?.classList.remove("open");
+  if (nostrErrorEl) nostrErrorEl.textContent = "";
 }
 
 function showView(name) {
@@ -120,18 +122,20 @@ function showView(name) {
     if (button.dataset.go === name) button.setAttribute("aria-current", "page");
     else button.removeAttribute("aria-current");
   });
-  nav.classList.remove("open");
-  menuBtn.setAttribute("aria-expanded", "false");
+  nav?.classList.remove("open");
+  menuBtn?.setAttribute("aria-expanded", "false");
   window.scrollTo(0, 0);
 }
 
 function renderJobs() {
+  const list = jobsEl || document.querySelector("#jobs");
+  if (!list) return;
   const rows = JOBS.filter((job) => filter === "all" || job.kind === filter);
   if (!rows.length) {
-    jobsEl.innerHTML = '<p class="empty">No roles in this filter.</p>';
+    list.innerHTML = '<p class="empty">No roles in this filter.</p>';
     return;
   }
-  jobsEl.innerHTML = rows
+  list.innerHTML = rows
     .map(
       (job) => `
       <article class="job">
@@ -151,7 +155,8 @@ function renderJobs() {
 }
 
 function loadProfile() {
-  const saved = sessionStorage.getItem(PROFILE_KEY + member.email);
+  if (!profileForm || !profileNote) return;
+  const saved = sessionStorage.getItem(PROFILE_KEY + member.pubkey);
   const data = saved
     ? JSON.parse(saved)
     : { focus: "Job search", proof: "", location: "" };
@@ -161,57 +166,112 @@ function loadProfile() {
   profileNote.textContent = saved ? "Saved on this device for this session." : "";
 }
 
-document.querySelector("#signin").addEventListener("click", () => {
-  const email = document.querySelector("#email").value.trim().toLowerCase();
-  const passcode = document.querySelector("#passcode").value;
-  const known = MEMBERS[email];
-  if (!known || known.passcode !== passcode) {
-    errorEl.textContent = "That email and passcode do not match a member.";
+async function signInWithNostr() {
+  if (nostrErrorEl) nostrErrorEl.textContent = "";
+  if (!hasNip07()) {
+    if (nostrErrorEl) {
+      nostrErrorEl.textContent =
+        "Nostr bridge failed to load. Reload the page and try again.";
+    }
     return;
   }
-  errorEl.textContent = "";
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ email }));
-  showApp({ email, ...known });
-});
+  const defaultLabel =
+    nostrSignInBtn?.dataset.label || "Continue with Nostr";
+  if (nostrSignInBtn) {
+    nostrSignInBtn.disabled = true;
+    nostrSignInBtn.textContent = "Waiting for keys.band…";
+  }
+  if (nostrErrorEl) {
+    nostrErrorEl.textContent =
+      "Check for a keys.band approval popup if nothing happens.";
+  }
+  try {
+    const pubkey = (await window.nostr.getPublicKey()).trim();
+    const npub = hexToNpub(pubkey);
+    if (!npub) {
+      if (nostrErrorEl) {
+        nostrErrorEl.textContent = "The extension returned an invalid public key.";
+      }
+      return;
+    }
+    if (nostrErrorEl) nostrErrorEl.textContent = "";
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ pubkey }));
+    showApp({ pubkey, npub });
+  } catch (err) {
+    if (nostrErrorEl) {
+      nostrErrorEl.textContent =
+        err?.message || "Could not read your public key from the extension.";
+    }
+  } finally {
+    if (nostrSignInBtn) {
+      nostrSignInBtn.disabled = false;
+      nostrSignInBtn.textContent = defaultLabel;
+    }
+  }
+}
 
-document.querySelector("#signout").addEventListener("click", () => {
-  sessionStorage.removeItem(SESSION_KEY);
-  showGate();
-});
+function bindUi() {
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
 
-document.querySelectorAll("[data-go]").forEach((button) => {
-  button.addEventListener("click", () => showView(button.dataset.go));
-});
+    if (target.closest("#nostr-signin")) {
+      void signInWithNostr();
+      return;
+    }
 
-document.querySelectorAll("[data-filter]").forEach((button) => {
-  button.addEventListener("click", () => {
-    filter = button.dataset.filter;
-    document.querySelectorAll("[data-filter]").forEach((chip) => {
-      chip.setAttribute("aria-pressed", chip === button ? "true" : "false");
-    });
-    renderJobs();
+    if (target.closest("#signout")) {
+      sessionStorage.removeItem(SESSION_KEY);
+      showGate();
+      return;
+    }
+
+    const go = target.closest("[data-go]");
+    if (go instanceof HTMLElement && go.dataset.go) {
+      showView(go.dataset.go);
+      return;
+    }
+
+    const filterBtn = target.closest("[data-filter]");
+    if (filterBtn instanceof HTMLElement && filterBtn.dataset.filter) {
+      filter = filterBtn.dataset.filter;
+      document.querySelectorAll("[data-filter]").forEach((chip) => {
+        chip.setAttribute(
+          "aria-pressed",
+          chip === filterBtn ? "true" : "false",
+        );
+      });
+      renderJobs();
+      return;
+    }
+
+    if (target.closest("#menu-btn") && nav && menuBtn) {
+      const open = nav.classList.toggle("open");
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    }
   });
-});
 
-menuBtn.addEventListener("click", () => {
-  const open = nav.classList.toggle("open");
-  menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
-});
+  document.addEventListener("submit", (event) => {
+    if (!(event.target instanceof HTMLFormElement)) return;
+    if (event.target.id !== "profile-form") return;
+    event.preventDefault();
+    if (!member) return;
+    const data = {
+      focus: event.target.elements.focus.value,
+      proof: event.target.elements.proof.value.trim(),
+      location: event.target.elements.location.value.trim(),
+    };
+    sessionStorage.setItem(PROFILE_KEY + member.pubkey, JSON.stringify(data));
+    const note = document.querySelector("#profile-note");
+    if (note) note.textContent = "Profile saved for this browser session.";
+  });
+}
 
-profileForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const data = {
-    focus: profileForm.elements.focus.value,
-    proof: profileForm.elements.proof.value.trim(),
-    location: profileForm.elements.location.value.trim(),
-  };
-  sessionStorage.setItem(PROFILE_KEY + member.email, JSON.stringify(data));
-  profileNote.textContent = "Profile saved for this browser session.";
-});
-
-document.querySelector("#signin-card").addEventListener("keydown", (event) => {
-  if (event.key === "Enter") document.querySelector("#signin").click();
-});
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bindUi);
+} else {
+  bindUi();
+}
 
 const existing = readSession();
 if (existing) showApp(existing);

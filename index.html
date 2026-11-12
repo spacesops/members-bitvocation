@@ -6,11 +6,12 @@
     <meta name="robots" content="noindex" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'"
+      content="default-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'"
     />
     <title>Bitvocation Members</title>
     <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/site.css?v=3" />
+    <script src="js/nostr-bridge.js?v=3"></script>
   </head>
   <body>
     <div id="gate">
@@ -34,20 +35,14 @@
         </section>
         <section class="card signin" id="signin-card">
           <h2>Sign in to your account</h2>
-          <p class="sub">Use your member email and passcode. Nothing on this page is loaded from another site.</p>
-          <div class="field">
-            <label for="email">Email address</label>
-            <input id="email" type="email" autocomplete="username" placeholder="member@bitvocation.local" />
-          </div>
-          <div class="field">
-            <label for="passcode">Passcode</label>
-            <input id="passcode" type="password" autocomplete="current-password" />
-          </div>
-          <p class="error" id="error" role="alert"></p>
-          <button class="btn" id="signin" type="button">Sign in</button>
-          <p class="hint">
-            Demo members: member@bitvocation.local or jordan@bitvocation.local. Passcode: reserve.
-          </p>
+          <p class="sub">Members sign in with a NIP-07 browser extension. Nothing on this page is loaded from another site.</p>
+          <h3 class="nostr-title">Sign In With Nostr</h3>
+          <p class="nostr-copy">Use your extension to share your public key and open the member area.</p>
+          <p class="error" id="nostr-error" role="alert"></p>
+          <button class="btn" id="nostr-signin" type="button" data-label="Continue with Nostr">
+            Continue with Nostr
+          </button>
+          <p class="hint">Use the keys.band extension or any NIP-07 signer that exposes <code>window.nostr</code>.</p>
         </section>
       </main>
     </div>
@@ -84,6 +79,10 @@
           <p class="lede">
             From job discovery to talent curation. We help Bitcoiners and Bitcoin jobs become more findable.
           </p>
+          <div class="identity-card wrap">
+            <p class="kicker">Your npub</p>
+            <p class="npub" id="member-npub"></p>
+          </div>
           <button class="btn" type="button" data-go="jobs">Open the member job feed</button>
         </div>
         <blockquote class="quote">
@@ -92,7 +91,7 @@
         </blockquote>
         <img class="scene" src="img/scene.svg" alt="Members working on reputation, a CV, findability, and proof of work" />
         <div class="section wrap">
-          <p class="kicker" style="text-align:center">The reserve</p>
+          <p class="kicker">The reserve</p>
           <h2>A Strategic Bitcoiners Reserve</h2>
           <p class="intro">
             Hiring on open networks brings a flood of mismatched applications. The POW Lab is a smaller, vetted circle of Bitcoin-aligned designers, developers, operators, and marketers.
@@ -119,7 +118,7 @@
 
       <section data-view="jobs" class="hidden">
         <div class="section wrap">
-          <p class="kicker" style="text-align:center">Member feed</p>
+          <p class="kicker">Member feed</p>
           <h2>Bitcoin job feed</h2>
           <p class="intro">
             A sample of the member feed: Bitcoin-only roles first, with adjacent companies kept in their own filter. These listings are illustrative and stay on this site.
@@ -135,7 +134,7 @@
 
       <section data-view="reserve" class="hidden">
         <div class="section wrap">
-          <p class="kicker" style="text-align:center">Talent pool</p>
+          <p class="kicker">Talent pool</p>
           <h2>Your reserve profile</h2>
           <p class="intro">
             Members answer a short brief — focus, proof of work, and where they can work — so recommendations are not another CV database.
@@ -174,7 +173,7 @@
 
       <section data-view="resources" class="hidden">
         <div class="section wrap">
-          <p class="kicker" style="text-align:center">Library</p>
+          <p class="kicker">Library</p>
           <h2>Member resources</h2>
           <p class="intro">
             Practical notes from the public Bitvocation programs, kept here for members. No outbound downloads.
@@ -213,6 +212,6 @@
 
       <footer class="footer">Bitvocation members · local pages only · Connecteconomy LLC</footer>
     </div>
-    <script src="js/site.js"></script>
+    <script type="module" src="js/site.js?v=3"></script>
   </body>
 </html>

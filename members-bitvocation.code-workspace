@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../nginx"
+		},
+		{
+			"path": "../keys-band"
+		},
+		{
+			"path": "../certrelay"
+		}
+	],
+	"settings": {}
+}
