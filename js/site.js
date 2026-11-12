@@ -1,4 +1,4 @@
-import { shortenNpub } from "./nip19.js?v=7";
+import { shortenNpub } from "./nip19.js?v=8";
 
 const JOBS = [
   {

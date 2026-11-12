@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Members only · Bitvocation</title>
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="stylesheet" href="css/site.css?v=9" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="21" fill="none" stroke="#111" stroke-width="2.4" />
+          <path fill="#111" d="M21.2 11.2h2.1v2.6h1.7c3.5 0 5.8 1.7 5.8 4.5 0 1.9-1 3.3-2.6 4 2.1.6 3.4 2.2 3.4 4.4 0 3.1-2.6 5.1-6.4 5.1h-1.9v2.8h-2.1v-2.8h-1.8v-2.2h1.8V22.4h-1.8v-2.2h1.8v-6.4h-1.8v-2.6h1.8zm2.1 4.6v5.2h2c1.7 0 2.8-.8 2.8-2.1s-1.1-2-2.8-2h-2zm0 7.4v5.2h2.5c1.9 0 3.1-.9 3.1-2.4s-1.2-2.4-3.1-2.4h-2.5z" />
+          <path stroke="#111" stroke-width="1.5" stroke-linecap="round" d="M18.6 13.4v21.2M27.4 11.6v24.8" />
+        </svg>
+        <span>BITVOCATION</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="/">App</a>
+      </nav>
+      <div class="session">
+        <span class="badge-members">Members only</span>
+        <span id="verified-handle" class="soft"></span>
+      </div>
+    </header>
+
+    <main class="section wrap member-page">
+      <p class="eyebrow">Verified access</p>
+      <h1>POW Lab briefing</h1>
+      <p class="intro">
+        This page is served only after nginx confirms your session cookie against a verified
+        <code>@space</code> handle. It is not linked from the public gate and cannot be read without
+        passing Fabric verification on sign-in.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <p class="kicker">Q1 focus</p>
+          <h2>Hiring signal</h2>
+          <p>
+            Prioritize Bitcoin-native operators over generalist applicants. Founders in the reserve
+            want a one-paragraph proof of work they can forward without opening a CV pile.
+          </p>
+        </article>
+        <article class="card">
+          <p class="kicker">Circle norms</p>
+          <h2>POW Lab etiquette</h2>
+          <ul class="list">
+            <li>Introduce yourself with a concrete artifact, not a title.</li>
+            <li>Keep adjacent roles in the adjacent filter — signal hygiene matters.</li>
+            <li>Update your reserve profile when your target role changes.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <p class="kicker">Internal</p>
+          <h2>Member calendar</h2>
+          <p>
+            Jobtober office hours and Career Compass reviews are announced here first. Nothing on this
+            page loads from another origin; schedules stay on this host.
+          </p>
+          <p class="note" id="session-note">Loading session…</p>
+        </article>
+      </div>
+
+      <p class="note">
+        Direct requests to this URL without a member cookie return <strong>403</strong> from nginx
+        before this HTML is served.
+        <a class="text-link" href="/founders-only.html">Founders room</a> (npub allowlist).
+      </p>
+    </main>
+
+    <footer class="footer">Bitvocation members · server-gated page</footer>
+    <script type="module" src="js/members-only.js?v=9"></script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { hexToNpub } from "./nip19.js?v=7";
+import { hexToNpub } from "./nip19.js?v=8";
 
 const NIP07_TIMEOUT_MS = 30_000;
 const SESSION_TIMEOUT_MS = 120_000;
@@ -28,7 +28,7 @@ function setBusy(buttonLabel, statusText) {
 }
 
 async function loadMemberApp(verifyJson) {
-  const mod = await import("./site.js?v=7");
+  const mod = await import("./site.js?v=8");
   mod.startApp(verifyJson);
 }
 
