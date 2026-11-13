@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your Spaces Name Is Your Membership Card</title>
+<style>
+  @page { size: Letter; margin: 0.55in 0.6in; }
+  :root {
+    --orange: #f7931a;
+    --ink: #1b1d22;
+    --muted: #5b6070;
+    --rule: #e6e2da;
+    --panel: #fbf7f0;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.42;
+    color: var(--ink);
+  }
+  code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: #f1ede6;
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+  a { color: inherit; text-decoration: none; }
+  .assets a { color: #b5640a; }
+
+  header {
+    border-left: 6px solid var(--orange);
+    padding: 2px 0 2px 16px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--orange);
+    margin: 0 0 4px;
+  }
+  h1 {
+    font-size: 22pt;
+    line-height: 1.08;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 11.5pt;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .meta {
+    display: flex;
+    gap: 18px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    font-size: 8.8pt;
+  }
+  .meta div { flex: 1; }
+  .meta b {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 6.8pt;
+    color: var(--muted);
+    margin-bottom: 1px;
+  }
+
+  h2 {
+    font-size: 12pt;
+    margin: 12px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--orange);
+  }
+  p { margin: 0 0 7px; }
+  .lede { font-size: 10.8pt; }
+
+  .innovations { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; }
+  .card {
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 8px 10px;
+    break-inside: avoid;
+  }
+  .card h3 {
+    font-size: 10pt;
+    margin: 0 0 4px;
+  }
+  .card h3 span {
+    display: inline-block;
+    width: 18px; height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    font-size: 8.5pt;
+    margin-right: 6px;
+  }
+  .card p { margin: 0; font-size: 9.2pt; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin: 7px 0 0;
+  }
+  th, td { text-align: left; padding: 3px 6px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--panel); font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+  .why { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; margin: 0; padding: 0; list-style: none; }
+  .why li { padding-left: 12px; border-left: 3px solid var(--orange); font-size: 9.3pt; }
+
+  .page-break { break-before: page; }
+
+  ol.questions { margin: 0; padding: 0; list-style: none; counter-reset: q; }
+  ol.questions li {
+    counter-increment: q;
+    position: relative;
+    padding: 7px 0 7px 34px;
+    border-bottom: 1px solid var(--rule);
+    break-inside: avoid;
+  }
+  ol.questions li::before {
+    content: counter(q);
+    position: absolute;
+    left: 0; top: 7px;
+    width: 23px; height: 23px;
+    line-height: 23px;
+    text-align: center;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    color: var(--orange);
+    font-weight: 700;
+    font-size: 9pt;
+  }
+  .q { font-weight: 600; font-size: 10.2pt; }
+  .explore { color: var(--muted); font-size: 9pt; margin-top: 2px; }
+  .explore b { color: var(--ink); font-weight: 600; }
+
+  .assets {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 9pt;
+  }
+  .assets dl { display: grid; grid-template-columns: 82px 1fr; gap: 4px 10px; margin: 0; }
+  .assets dt { font-weight: 700; color: var(--muted); text-transform: uppercase; font-size: 7.2pt; letter-spacing: 0.08em; padding-top: 1px; }
+  .assets dd { margin: 0; }
+  .assets .link { display: inline-block; width: 49%; }
+  .assets .link.wide { width: 100%; }
+  .assets .link b { font-weight: 600; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Press one-pager · Spaces Protocol</p>
+  <h1>Your Spaces Name Is Your Membership Card</h1>
+  <p class="subtitle">Nostr sign-in, Bitcoin-anchored names, and server-enforced access</p>
+</header>
+
+<div class="meta">
+  <div><b>For</b>Bitcoin podcasters, Nostr show hosts, and Bitcoin social media creators</div>
+  <div><b>Live demo</b>bitvocation.timeintosats.com</div>
+  <div><b>Contact</b>Andrew Lunde · andrew@lunde.com<br>linkedin.com/in/andrewlunde</div>
+</div>
+
+<h2>The short version</h2>
+<p class="lede">Andrew Lunde built a working members site where <b>your Bitcoin-anchored Spaces name is your membership card</b>. You sign in with a Nostr key. The server then checks, against Spaces Protocol relays, which <code>name@space</code> handle that key really owns. Access is decided by that answer. There are no passwords, no email signups, and no OAuth providers.</p>
+<p>The verification runs on the server, inside the web server's request path. A visitor can't skip it by editing JavaScript or pasting a cookie.</p>
+
+<h2>What's new here</h2>
+<div class="innovations">
+  <div class="card">
+    <h3><span>1</span>Sign in with Nostr, verified by Spaces Protocol</h3>
+    <p>Visitors approve the site in a NIP-07 browser extension (keys.band was used for testing). The site never sees a private key. A small Rust service asks the Spaces relay network (Fabric / certrelay) which handle, such as <code>andrew@bitvocation</code>, is bound to that key. The result is a signed session cookie.</p>
+  </div>
+  <div class="card">
+    <h3><span>2</span>The web server enforces access, not the browser</h3>
+    <p>Using nginx's <code>auth_request</code>, every protected page or script triggers an internal check against the verification service before nginx serves a single byte. Pages that aren't approved are never sent to the browser.</p>
+  </div>
+  <div class="card">
+    <h3><span>3</span>Access based on namespace</h3>
+    <p>Spaces names have structure, and the site uses it. A community that owns a space can say "if you hold a name in our space, you're in." No member database is needed. The Bitcoin-anchored namespace is the roster.</p>
+    <table>
+      <tr><th>Tier</th><th>Who gets in</th></tr>
+      <tr><td>Members</td><td>Any key with a verified Spaces handle</td></tr>
+      <tr><td>Namespace</td><td>Handles under <code>@bitvocation</code> or <code>@bitcoin</code></td></tr>
+      <tr><td>Founders</td><td>An npub allowlist, still verified</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3><span>4</span>Web servers that understand Spaces names</h3>
+    <p>The same nginx fork routes visitors by Spaces handles (<code>subspace@space</code>) as well as by ordinary DNS hostnames. One box serves <code>members@bitvocation</code> and <code>bitvocation.timeintosats.com</code> from the same config.</p>
+  </div>
+</div>
+
+<h2>Why it matters for Bitcoiners</h2>
+<ul class="why">
+  <li><b>Identity you own.</b> Your handle is anchored to Bitcoin, not rented from a platform that can suspend it.</li>
+  <li><b>Communities as namespaces.</b> Owning a space gives a group a native, verifiable membership system.</li>
+  <li><b>Less data to leak.</b> No passwords or emails are stored. The only thing held is a short-lived signed cookie.</li>
+  <li><b>Composable.</b> Nostr gives the key and Spaces gives the name. Plain nginx does the gating. Each piece is open and replaceable.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2>Sample interview questions</h2>
+<p>These are meant to bring out the value of Spaces Protocol names.</p>
+<ol class="questions">
+  <li><div class="q">"Why not just use a Nostr npub? Why does a name need to be anchored to Bitcoin?"</div>
+    <div class="explore"><b>Explore:</b> npubs are keys, not names. Spaces names are scarce and hard to fake. You can verify who controls a name without trusting a registrar.</div></li>
+  <li><div class="q">"What does <code>andrew@bitvocation</code> say that a Twitter handle or an email address doesn't?"</div>
+    <div class="explore"><b>Explore:</b> proof of control, who can revoke it, and the name being a credential as well as a label.</div></li>
+  <li><div class="q">"You gate a page to <code>@bitvocation</code> and <code>@bitcoin</code> names only. What can a community do once membership is just 'who holds a name in our space'?"</div>
+    <div class="explore"><b>Explore:</b> no member database, issuing subspace names as membership, portability between sites.</div></li>
+  <li><div class="q">"Walk us through what happens between clicking 'Continue with Nostr' and seeing the members page."</div>
+    <div class="explore"><b>Explore:</b> NIP-07 signing, relay lookup, Fabric verification, the signed cookie, nginx checking each request.</div></li>
+  <li><div class="q">"Isn't checking against relays slow? What's the user experience?"</div>
+    <div class="explore"><b>Explore:</b> honest trade-offs. A first verification can take a while and later visits are cached. The UI shows a live elapsed-seconds counter instead of hiding the wait.</div></li>
+  <li><div class="q">"Why enforce access in the web server instead of the app?"</div>
+    <div class="explore"><b>Explore:</b> client-side gating is cosmetic. <code>auth_request</code> means protected bytes never leave the server without a valid check.</div></li>
+  <li><div class="q">"Where do DNS names and Spaces names meet? Do people need special software to visit?"</div>
+    <div class="explore"><b>Explore:</b> the same site answers on <code>bitvocation.timeintosats.com</code> and <code>members@bitvocation</code>, so Spaces can be adopted gradually.</div></li>
+  <li><div class="q">"What would you tell a Bitcoin meetup, podcast, or company that wants this for its own community?"</div>
+    <div class="explore"><b>Explore:</b> own a space, issue names, point the namespace rule at it.</div></li>
+  <li><div class="q">"What's the hardest part you ran into?"</div>
+    <div class="explore"><b>Explore:</b> making the web server and the verification service agree on who's allowed in, and keeping the wait for verification honest.</div></li>
+  <li><div class="q">"Five years out, what does the internet look like if Bitcoin-anchored names become normal?"</div>
+    <div class="explore"><b>Explore:</b> logins, access lists, and reputation that users carry with them instead of renting from platforms.</div></li>
+</ol>
+
+<h2>Assets for show notes</h2>
+<div class="assets">
+  <dl>
+    <dt>Demo</dt><dd><a href="https://bitvocation.timeintosats.com">bitvocation.timeintosats.com</a></dd>
+    <dt>Code</dt><dd><a href="https://github.com/spacesops/members-bitvocation">github.com/spacesops/members-bitvocation</a> (site)<br><a href="https://github.com/spacesops/nginx">github.com/spacesops/nginx</a> (gateway + <code>fabric-lookupd</code>)</dd>
+    <dt>Learn more</dt><dd>
+      <span class="link"><b>Bitvocation</b> <a href="https://bitvocation.com/">bitvocation.com</a></span>
+      <span class="link"><b>Spaces explorer</b> <a href="https://explorer.spacesprotocol.org/">explorer.spacesprotocol.org</a></span>
+      <span class="link"><b>Spaces wallet</b> <a href="https://spaceswallet.com/">spaceswallet.com</a></span>
+      <span class="link"><b>SpacesOps</b> <a href="https://spacesops.com/">spacesops.com</a></span>
+      <span class="link wide"><b>Spaces Protocol White Paper</b> <a href="https://spacesprotocol.org/paper/">spacesprotocol.org/paper</a></span>
+    </dd>
+    <dt>Built on</dt><dd>Spaces Protocol (Fabric / certrelay), Nostr NIP-07, nginx <code>auth_request</code>, Rust</dd>
+    <dt>Contact</dt><dd>Andrew Lunde · <a href="mailto:andrew@lunde.com">andrew@lunde.com</a> · <a href="https://www.linkedin.com/in/andrewlunde/">linkedin.com/in/andrewlunde</a></dd>
+  </dl>
+</div>
+
+</body>
+</html>
