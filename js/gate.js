@@ -27,6 +27,19 @@ function setBusy(buttonLabel, statusText) {
   if (nostrErrorEl) nostrErrorEl.textContent = statusText;
 }
 
+/** Updates #nostr-error every second with "(Ns)" until stop() is called. */
+function startElapsedStatus(baseText) {
+  const started = Date.now();
+  const render = () => {
+    if (!nostrErrorEl) return;
+    const seconds = Math.floor((Date.now() - started) / 1000);
+    nostrErrorEl.textContent = `${baseText} (${seconds}s)`;
+  };
+  render();
+  const id = window.setInterval(render, 1000);
+  return () => window.clearInterval(id);
+}
+
 async function loadMemberApp(verifyJson) {
   const mod = await import("./site.js?v=8");
   mod.startApp(verifyJson);
@@ -78,10 +91,10 @@ async function signInWithNostr() {
       return;
     }
 
-    setBusy(
-      "Verifying @space…",
-      "Checking your npub against the relay network (first sign-in may take up to two minutes).",
-    );
+    const verifyStatusBase =
+      "Checking your npub against the relay network (first sign-in may take up to two minutes)";
+    setBusy("Verifying @space…", `${verifyStatusBase} (0s)`);
+    const stopElapsed = startElapsedStatus(verifyStatusBase);
 
     const controller = new AbortController();
     const sessionTimer = window.setTimeout(
@@ -99,6 +112,7 @@ async function signInWithNostr() {
         signal: controller.signal,
       });
     } finally {
+      stopElapsed();
       window.clearTimeout(sessionTimer);
     }
 
